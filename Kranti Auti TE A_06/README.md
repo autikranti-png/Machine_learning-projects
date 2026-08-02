@@ -213,8 +213,4 @@ Contributions are welcome!
 
 <div align="center">
 
-###  If you like this project, don't forget to star the repository!
-
-Made with ❤️ by **Kranti Auti**
-
 </div>
