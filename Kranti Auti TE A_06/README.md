@@ -207,13 +207,9 @@ Contributions are welcome!
 
 ** Kranti Auti**
 
-**Email:** your-email@example.com
+**Email:** autikranti@gmail.com
 
- **GitHub:** https://github.com/your-github
-
- **LinkedIn:** https://linkedin.com/in/your-linkedin
-
----
+ **GitHub:** https://github.com/autikranti-png/Machine_learning-projects.git
 
 <div align="center">
 
