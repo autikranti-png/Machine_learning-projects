@@ -267,14 +267,6 @@ Engineering Student | Machine Learning Enthusiast
 
 ---
 
-## 🤝 Contributions
-
-Contributions, suggestions, and improvements are welcome.
-
-If you find this project useful, consider giving the repository a **⭐ Star**.
-
----
-
 <p align="center">
-  Made with ❤️ using Python, Machine Learning, and Flask
+  
 </p>
