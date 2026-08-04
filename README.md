@@ -7,21 +7,28 @@ A Machine Learning project that predicts whether a student is likely to be place
 This project uses a Machine Learning model to analyze student data and predict placement outcomes. The prediction is based on the following input features:
 
 CGPA – Student’s academic performance
+
 IQ – Student’s IQ score
+
 Profile Score – Overall student profile score
 
 The model predicts:
 
 1 → Placed
+
 0 → Not Placed
+
 📊 Dataset Information
 
 The dataset contains 300 student records with the following columns:
 
 Feature	Description
 cgpa	Student’s Cumulative Grade Point Average
+
 iq	Student’s IQ score
+
 profile_score	Student’s overall profile score
+
 placed	Placement status: 1 for Placed and 0 for Not Placed
 
 🛠️ Technologies Used
