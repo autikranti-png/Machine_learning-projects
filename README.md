@@ -33,15 +33,25 @@ placed	Placement status: 1 for Placed and 0 for Not Placed
 
 🛠️ Technologies Used
 Python
+
 Machine Learning
+
 Pandas
+
 NumPy
+
 Scikit-learn
+
 Flask
+
 HTML
+
 CSS
+
 Pickle
+
 VS Code
+
 GitHub
 
 ⚙️ Project Workflow
