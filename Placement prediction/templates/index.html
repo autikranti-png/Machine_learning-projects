@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Placement Portal & Analytics</title>
+
+    <!-- Bootstrap 5, FontAwesome, Google Fonts, & Chart.js -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg-vibrant: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 35%, #ffe4e6 70%, #dbeafe 100%);
+            --card-glass: rgba(255, 255, 255, 0.88);
+            --card-border: rgba(255, 255, 255, 0.7);
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            --danger-gradient: linear-gradient(135deg, #f43f5e 0%, #fb7185 100%);
+            --text-dark: #0f172a;
+            --text-muted: #475569;
+        }
+
+        body {
+            background: var(--bg-vibrant);
+            background-attachment: fixed;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        /* Glassmorphic Navigation Header */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.08);
+        }
+
+        .nav-pills .nav-link {
+            color: var(--text-muted);
+            font-weight: 700;
+            border-radius: 0.75rem;
+            padding: 0.55rem 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-pills .nav-link:hover {
+            color: #6366f1;
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .nav-pills .nav-link.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.35);
+        }
+
+        /* Frosted Glassmorphic Cards */
+        .glass-card {
+            background: var(--card-glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 1.5rem;
+            box-shadow: 0 15px 35px -5px rgba(99, 102, 241, 0.1), 0 10px 15px -5px rgba(236, 72, 153, 0.05);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px -5px rgba(99, 102, 241, 0.18);
+        }
+
+        /* Input Controls */
+        .input-group-custom {
+            background: #ffffff;
+            border: 2px solid #e0e7ff;
+            border-radius: 0.85rem;
+            transition: all 0.25s ease;
+        }
+
+        .input-group-custom:focus-within {
+            border-color: #a855f7;
+            box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.2);
+        }
+
+        .form-control-custom {
+            background: transparent !important;
+            border: none !important;
+            color: var(--text-dark) !important;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+        }
+
+        /* Vibrant Buttons */
+        .btn-gradient {
+            background: var(--primary-gradient);
+            background-size: 150% auto;
+            border: none;
+            color: white;
+            font-weight: 700;
+            padding: 0.85rem 1.5rem;
+            border-radius: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gradient:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(236, 72, 153, 0.4);
+            background-position: right center;
+        }
+
+        /* Status Badges & Icon Boxes */
+        .result-icon-badge {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 1.25rem auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        /* Custom Table Aesthetics */
+        .table-custom {
+            --bs-table-bg: transparent;
+            --bs-table-color: var(--text-dark);
+        }
+
+        .table-custom th {
+            color: #6366f1;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid #e0e7ff;
+        }
+
+        .table-custom td {
+            border-bottom-color: rgba(224, 231, 255, 0.6);
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Main Navigation Bar -->
+    <nav class="navbar navbar-expand-lg glass-nav sticky-top mb-4">
+        <div class="container">
+            <a class="navbar-brand text-dark fw-bold d-flex align-items-center me-4" href="#">
+                <span class="p-2 rounded-3 me-2 text-white" style="background: var(--primary-gradient);">
+                    <i class="fa-solid fa-graduation-cap fs-5"></i>
+                </span>
+                <span style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Placement AI Portal</span>
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="nav nav-pills me-auto" id="dashboardTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link {{ 'active' if not result and not error else '' }}" id="home-tab" data-bs-toggle="pill" data-bs-target="#home-section" type="button" role="tab">
+                            <i class="fa-solid fa-house me-1"></i> Home
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link {{ 'active' if result or error else '' }}" id="predict-tab" data-bs-toggle="pill" data-bs-target="#predict-section" type="button" role="tab">
+                            <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Predictor
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="analytics-tab" data-bs-toggle="pill" data-bs-target="#analytics-section" type="button" role="tab">
+                            <i class="fa-solid fa-chart-pie me-1"></i> Analytics & Graphs
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="history-tab" data-bs-toggle="pill" data-bs-target="#history-section" type="button" role="tab">
+                            <i class="fa-solid fa-clock-rotate-left me-1"></i> History Log
+                        </button>
+                    </li>
+                </ul>
+
+                <span class="badge bg-white text-purple border border-purple px-3 py-2 rounded-pill shadow-sm mt-2 mt-lg-0" style="color: #8b5cf6;">
+                    <i class="fa-solid fa-bolt text-warning me-1"></i> Model v2.4 Online
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container pb-5">
+
+        <div class="tab-content" id="dashboardTabsContent">
+
+            <!-- ================= SECTION 1: HOME DASHBOARD ================= -->
+            <div class="tab-pane fade {{ 'show active' if not result and not error else '' }}" id="home-section" role="tabpanel">
+                
+                <div class="glass-card p-5 mb-4 text-center text-md-start">
+                    <div class="row align-items-center">
+                        <div class="col-md-7">
+                            <span class="badge bg-white text-primary px-3 py-2 rounded-pill fw-bold shadow-sm mb-3">
+                                <i class="fa-solid fa-sparkles text-warning me-1"></i> Smart Predictive Intelligence
+                            </span>
+                            <h1 class="fw-extrabold display-5 text-dark mb-3">Predict & Track Student Career Placements</h1>
+                            <p class="text-muted fs-6 mb-4">Leverage machine learning analytics to evaluate student placement prospects and identify candidates who need skill improvement.</p>
+                            <button class="btn btn-gradient btn-lg shadow" onclick="switchToPredictor()">
+                                Start Prediction <i class="fa-solid fa-arrow-right ms-2"></i>
+                            </button>
+                        </div>
+                        <div class="col-md-5 text-center mt-4 mt-md-0">
+                            <img src="https://illustrations.popsy.co/blue/student-with-diploma.svg" alt="Placement Banner" class="img-fluid" style="max-height: 250px;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Summary KPI Grid -->
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="glass-card p-4 h-100 d-flex align-items-center">
+                            <div class="icon-box bg-primary text-white me-3 shadow-sm" style="background: linear-gradient(135deg, #3b82f6, #60a5fa) !important;">
+                                <i class="fa-solid fa-user-check"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted fw-bold mb-1">PLACED CANDIDATES</h6>
+                                <h3 class="fw-extrabold mb-0 text-success" id="kpiPlacedCount">0</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="glass-card p-4 h-100 d-flex align-items-center border-danger border-opacity-25">
+                            <div class="icon-box text-white me-3 shadow-sm" style="background: var(--danger-gradient) !important;">
+                                <i class="fa-solid fa-user-xmark"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-danger fw-bold mb-1"><i class="fa-solid fa-triangle-exclamation me-1"></i> NOT PLACED (AT RISK)</h6>
+                                <h3 class="fw-extrabold mb-0 text-danger" id="kpiNotPlacedCount">0</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="glass-card p-4 h-100 d-flex align-items-center">
+                            <div class="icon-box text-white me-3 shadow-sm" style="background: linear-gradient(135deg, #a855f7, #c084fc) !important;">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted fw-bold mb-1">TOTAL EVALUATED</h6>
+                                <h3 class="fw-extrabold mb-0 text-dark" id="kpiTotalCount">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- ================= SECTION 2: PREDICTION TOOL ================= -->
+            <div class="tab-pane fade {{ 'show active' if result or error else '' }}" id="predict-section" role="tabpanel">
+                <div class="row g-4">
+                    <!-- Form Input Card -->
+                    <div class="col-lg-5">
+                        <div class="glass-card p-4 h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="fw-bold mb-0 text-dark">
+                                    <i class="fa-solid fa-sliders text-indigo me-2" style="color: #6366f1;"></i> Student Parameters
+                                </h5>
+                                <span class="badge bg-white text-muted border shadow-sm">Input Metrics</span>
+                            </div>
+
+                            <form action="/predict" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted small fw-bold">ACADEMIC CGPA</label>
+                                    <div class="input-group-custom d-flex align-items-center px-3">
+                                        <i class="fa-solid fa-book-open text-primary"></i>
+                                        <input type="number" step="0.01" min="0" max="10" name="cgpa" 
+                                               class="form-control form-control-custom" placeholder="Scale 0.0 - 10.0" 
+                                               value="{{ request.form.cgpa if request.form.cgpa else '' }}" required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label text-muted small fw-bold">COGNITIVE SCORE (IQ)</label>
+                                    <div class="input-group-custom d-flex align-items-center px-3">
+                                        <i class="fa-solid fa-brain" style="color: #a855f7;"></i>
+                                        <input type="number" min="50" max="200" name="iq" 
+                                               class="form-control form-control-custom" placeholder="Range 50 - 200" 
+                                               value="{{ request.form.iq if request.form.iq else '' }}" required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label text-muted small fw-bold">PROFILE SCORE</label>
+                                    <div class="input-group-custom d-flex align-items-center px-3">
+                                        <i class="fa-solid fa-chart-line" style="color: #ec4899;"></i>
+                                        <input type="number" min="0" max="100" name="profile_score" 
+                                               class="form-control form-control-custom" placeholder="Scale 0 - 100" 
+                                               value="{{ request.form.profile_score if request.form.profile_score else '' }}" required>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-gradient w-100 shadow">
+                                    <i class="fa-solid fa-wand-magic-sparkles me-2"></i> Run Placement Prediction
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Result Panel -->
+                    <div class="col-lg-7">
+                        <div class="glass-card p-4 h-100 d-flex flex-column justify-content-center align-items-center text-center">
+
+                            {% if result %}
+                                <div class="py-2 w-100">
+                                    <!-- Dynamic Check for Placed vs Not Placed -->
+                                    {% if result == 'Placed' or result == 1 or result == '1' %}
+                                        <div class="result-icon-badge bg-success text-white">
+                                            <i class="fa-solid fa-circle-check"></i>
+                                        </div>
+                                        <div>
+                                            <span class="badge bg-success text-white fs-6 px-4 py-2 rounded-pill shadow-sm mb-2">
+                                                <i class="fa-solid fa-check me-1"></i> High Placement Probability
+                                            </span>
+                                            <h2 class="fw-bold text-success mb-2">Student Likely Placed!</h2>
+                                            <p class="text-muted small mx-auto" style="max-width: 400px;">
+                                                The candidate exhibits strong parameters that meet benchmark recruitment standards.
+                                            </p>
+                                        </div>
+                                    {% else %}
+                                        <div class="result-icon-badge bg-danger text-white">
+                                            <i class="fa-solid fa-circle-xmark"></i>
+                                        </div>
+                                        <div>
+                                            <span class="badge bg-danger text-white fs-6 px-4 py-2 rounded-pill shadow-sm mb-2">
+                                                <i class="fa-solid fa-user-xmark me-1"></i> Not Placed (At Risk)
+                                            </span>
+                                            <h2 class="fw-bold text-danger mb-2">Placement Unlikely</h2>
+                                            <p class="text-muted small mx-auto" style="max-width: 400px;">
+                                                This candidate currently falls below benchmark requirements for placement eligibility.
+                                            </p>
+
+                                            <!-- Unplaced Specific Improvement Recommendations Box -->
+                                            <div class="alert alert-warning border-0 shadow-sm text-start mt-3 mx-auto p-3" style="max-width: 450px; background-color: rgba(254, 240, 138, 0.5);">
+                                                <h6 class="fw-bold text-dark mb-1"><i class="fa-solid fa-lightbulb text-warning me-1"></i> Recommended Next Steps:</h6>
+                                                <ul class="small text-dark mb-0 ps-3">
+                                                    <li>Build practical projects to improve Profile Score above 50.</li>
+                                                    <li>Practice quantitative aptitude modules to raise IQ score.</li>
+                                                    <li>Aim for a target CGPA threshold of at least 6.0.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if probability is defined and probability is not none %}
+                                    <div class="mt-4 px-md-5 text-start">
+                                        <div class="d-flex justify-content-between text-muted small fw-bold mb-1">
+                                            <span>Prediction Confidence Level</span>
+                                            <span class="text-dark">{{ probability }}%</span>
+                                        </div>
+                                        <div class="progress" style="height: 12px; background-color: #e0e7ff; border-radius: 1rem;">
+                                            <div class="progress-bar rounded-pill" role="progressbar" 
+                                                 style="width: {{ probability }}%; background: {% if result == 'Placed' or result == 1 or result == '1' %}var(--primary-gradient){% else %}var(--danger-gradient){% endif %};"></div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            {% elif error %}
+                                <div class="alert alert-danger w-100 mb-0 shadow-sm" role="alert">
+                                    <i class="fa-solid fa-triangle-exclamation me-2"></i> {{ error }}
+                                </div>
+                            {% else %}
+                                <div class="py-4">
+                                    <img src="https://illustrations.popsy.co/blue/student-with-diploma.svg" alt="Ready" style="max-width: 200px;" class="mb-3">
+                                    <h4 class="fw-bold text-dark">Ready to Analyze</h4>
+                                    <p class="text-muted small mx-auto" style="max-width: 320px;">
+                                        Enter student metrics on the left form and run prediction to view results.
+                                    </p>
+                                </div>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- ================= SECTION 3: ANALYTICS & GRAPHS ================= -->
+            <div class="tab-pane fade" id="analytics-section" role="tabpanel">
+                <div class="row g-4">
+                    <!-- Doughnut Distribution Chart -->
+                    <div class="col-lg-5">
+                        <div class="glass-card p-4 h-100 text-center">
+                            <h5 class="fw-bold text-dark text-start mb-3">
+                                <i class="fa-solid fa-chart-pie text-primary me-2"></i> Placed vs. Unplaced Ratio
+                            </h5>
+                            <div class="d-flex justify-content-center align-items-center" style="min-height: 260px;">
+                                <canvas id="placementPieChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metrics Bar Chart -->
+                    <div class="col-lg-7">
+                        <div class="glass-card p-4 h-100">
+                            <h5 class="fw-bold text-dark mb-3">
+                                <i class="fa-solid fa-chart-column me-2" style="color: #a855f7;"></i> Student Parameters Logged
+                            </h5>
+                            <div style="min-height: 260px;">
+                                <canvas id="metricsBarChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- ================= SECTION 4: PREDICTION HISTORY ================= -->
+            <div class="tab-pane fade" id="history-section" role="tabpanel">
+                <div class="glass-card p-4">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+                        <div>
+                            <h5 class="fw-bold mb-1 text-dark">
+                                <i class="fa-solid fa-clock-rotate-left text-primary me-2"></i> Student Prediction History Log
+                            </h5>
+                            <p class="text-muted small mb-0">Evaluate candidates or filter out students who are **Not Placed**.</p>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-2">
+                            <!-- Filter Buttons -->
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-outline-primary active" id="btnFilterAll" onclick="filterHistoryTable('all')">All</button>
+                                <button type="button" class="btn btn-outline-danger" id="btnFilterUnplaced" onclick="filterHistoryTable('unplaced')">
+                                    <i class="fa-solid fa-user-xmark me-1"></i> Show Unplaced Only
+                                </button>
+                            </div>
+
+                            {% if history %}
+                            <form action="/clear-history" method="POST" class="m-0">
+                                <button type="submit" class="btn btn-outline-secondary btn-sm rounded-pill px-3 fw-bold">
+                                    <i class="fa-solid fa-trash-can me-1"></i> Clear Log
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-custom align-middle mb-0" id="historyTable">
+                            <thead>
+                                <tr>
+                                    <th>CGPA Score</th>
+                                    <th>IQ Score</th>
+                                    <th>Profile Score</th>
+                                    <th>Status Outcome</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if history %}
+                                    {% for row in history %}
+                                    {% set is_placed = (row[3] == 'Placed' or row[3] == 1 or row[3] == '1') %}
+                                    <tr class="history-row" data-status="{{ 'placed' if is_placed else 'unplaced' }}">
+                                        <td class="fw-bold text-dark">{{ row[0] }}</td>
+                                        <td>{{ row[1] }}</td>
+                                        <td>{{ row[2] }}</td>
+                                        <td>
+                                            {% if is_placed %}
+                                                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill fw-bold">
+                                                    <i class="fa-solid fa-check me-1"></i> Placed
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-danger text-white px-3 py-1 rounded-pill fw-bold shadow-sm">
+                                                    <i class="fa-solid fa-xmark me-1"></i> Not Placed
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="4" class="text-center py-5 text-muted small">
+                                            <i class="fa-regular fa-folder-open display-6 mb-2 d-block text-secondary opacity-50"></i>
+                                            No prediction history records found.
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JavaScript Navigation, Unplaced Filtering & Chart.js -->
+    <script>
+        function switchToPredictor() {
+            const predictTabBtn = document.getElementById('predict-tab');
+            const tabInstance = new bootstrap.Tab(predictTabBtn);
+            tabInstance.show();
+        }
+
+        // Parse Jinja History into JS Array
+        const historyData = [
+            {% if history %}
+                {% for row in history %}
+                    {
+                        cgpa: {{ row[0] }},
+                        iq: {{ row[1] }},
+                        profile: {{ row[2] }},
+                        placed: {% if row[3] == 'Placed' or row[3] == 1 or row[3] == '1' %} 1 {% else %} 0 {% endif %}
+                    }{% if not loop.last %},{% endif %}
+                {% endfor %}
+            {% endif %}
+        ];
+
+        // Process Placed vs Unplaced Metrics
+        const placedCount = historyData.filter(d => d.placed === 1).length;
+        const notPlacedCount = historyData.filter(d => d.placed === 0).length;
+
+        // Populate Home KPI Numbers
+        document.getElementById('kpiPlacedCount').innerText = placedCount;
+        document.getElementById('kpiNotPlacedCount').innerText = notPlacedCount;
+        document.getElementById('kpiTotalCount').innerText = historyData.length;
+
+        // Chart 1: Placement Distribution Doughnut Chart
+        const pieCtx = document.getElementById('placementPieChart').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Placed Students', 'Not Placed Students'],
+                datasets: [{
+                    data: [placedCount, notPlacedCount],
+                    backgroundColor: ['#10b981', '#f43f5e'],
+                    borderWidth: 3,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        // Chart 2: Feature Metrics Bar Chart
+        const recentLogs = historyData.slice(-5);
+        const barLabels = recentLogs.map((_, i) => `Entry #${i + 1}`);
+        const cgpaData = recentLogs.map(d => d.cgpa);
+        const profileData = recentLogs.map(d => d.profile);
+
+        const barCtx = document.getElementById('metricsBarChart').getContext('2d');
+        new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: barLabels.length ? barLabels : ['No Data'],
+                datasets: [
+                    {
+                        label: 'CGPA Score (Scale 0-10)',
+                        data: cgpaData.length ? cgpaData : [0],
+                        backgroundColor: '#6366f1',
+                        borderRadius: 6
+                    },
+                    {
+                        label: 'Profile Score (Scale 0-100)',
+                        data: profileData.length ? profileData : [0],
+                        backgroundColor: '#ec4899',
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true }
+                },
+                plugins: {
+                    legend: { position: 'top' }
+                }
+            }
+        });
+
+        // Table Filter Functionality (Show All vs Unplaced Only)
+        function filterHistoryTable(filter) {
+            const rows = document.querySelectorAll('.history-row');
+            const btnAll = document.getElementById('btnFilterAll');
+            const btnUnplaced = document.getElementById('btnFilterUnplaced');
+
+            if (filter === 'unplaced') {
+                btnAll.classList.remove('active');
+                btnUnplaced.classList.add('active');
+
+                rows.forEach(row => {
+                    if (row.getAttribute('data-status') === 'unplaced') {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            } else {
+                btnUnplaced.classList.remove('active');
+                btnAll.classList.add('active');
+
+                rows.forEach(row => {
+                    row.style.display = '';
+                });
+            }
+        }
+    </script>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
