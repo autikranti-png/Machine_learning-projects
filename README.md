@@ -57,12 +57,19 @@ GitHub
 ⚙️ Project Workflow
 
 Load the student placement dataset.
+
 Perform data preprocessing.
+
 Select important features.
+
 Train the Machine Learning model.
+
 Save the trained model using Pickle.
+
 Build a web application using Flask.
+
 Enter student details in the web interface.
+
 Display the placement prediction result.
 
 🚀 How to Run the Project
