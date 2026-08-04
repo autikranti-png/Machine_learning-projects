@@ -79,18 +79,27 @@ Student_Placement_Prediction/
 
 User-friendly web interface
 Placement prediction using Machine Learning
+
 Input validation
+
 Fast prediction results
+
 Flask-based deployment
+
 Easy-to-use student placement prediction system
 
 🎯 Future Improvements
 
 Add more student-related features.
+
 Improve model accuracy using advanced algorithms.
+
 Add prediction history.
+
 Add graphical data visualization.
+
 Deploy the application online.
+
 Add user authentication.
 
 👩‍💻 Author
