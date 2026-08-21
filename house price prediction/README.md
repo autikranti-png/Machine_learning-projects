@@ -733,8 +733,8 @@ Python Pandas NumPy Scikit-learn Machine Learning Regression Decision Tree Data 
 Explore more of my Machine Learning and Data Analytics projects:
 
 GitHub:
-https://github.com/autikranti-png/Machine_learning-projects
-
+[https://github.com/autikranti-png/Machine_learning-projects
+](https://github.com/autikranti-png/Machine_learning-projects/tree/6498028bbcd5b91a1ebc29ea611cc9ea27a10058/house%20price%20prediction)
 
 📜 Project Summary
 
